@@ -11,13 +11,13 @@ void main(){
     for (int j = 0;j <= i; j++){
         if(s[j] != '\t' && s[j] != '\n'){
             putchar(s[j]);
-            if(n > 5){
+            if(n > 7){
                 n = -1; 
             }
             n++;
         }
         if(s[j] == '\t'){
-            while(n < 6){
+            while(n < 8){
                 putchar(' ');
                 n++;   
             }
