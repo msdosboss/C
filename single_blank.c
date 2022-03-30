@@ -1,21 +1,22 @@
 #include <stdio.h>
 main(){
     int flag = 0;
-    char c,l;
-    c = l = getchar();
+    char c;
+    c = getchar();
     while(c !=EOF){
         if ( c != ' '){
             putchar(c);
-    }
-        else if (l == ' '&& flag == 0){
+            flag = 0;
+        }
+        else if (c == ' '&& flag == 0){
             putchar(c);
             flag = 1;
         }
-        else if(l == ' ' && flag == 1){}
+        else if(c == ' ' && flag == 1){}
         else{
         putchar(c);
+        flag=0;
         }
     c = getchar();
-    l=c;
     }
 }
