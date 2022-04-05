@@ -102,7 +102,7 @@ void pawn(int board[][8],int *currentsquare, int color){
     printf("where would you like to move your pawn?");
     squarecord2 = getmove();
     if(!color){                                                                                                                                //checks for color
-        if(board[(*(currentsquare + 1) + 1 <= 7 ) ? (*(currentsquare + 1) + 1) : 0][(*currentsquare + 1 <= 7) ? (*currentsquare + 1) : 0] % 2 != 0 || board[(*(currentsquare + 1) - 1 >= 0) ? (*(currentsquare + 1) - 1) : 0][(*currentsquare + 1 >= 7) ? (*currentsquare + 1) : 0] % 2 != 0){    //checks if you can capture
+        if(board[(*(currentsquare + 1) + 1 <= 7 ) ? (*(currentsquare + 1) + 1) : 0][(*currentsquare + 1 <= 7) ? (*currentsquare + 1) : 0] % 2 != 0 || board[(*(currentsquare + 1) - 1 >= 0) ? (*(currentsquare + 1) - 1) : 0][(*currentsquare + 1 >= 7) ? (*currentsquare + 1) : 0] % 2 != 0){    //checks if you can capture 
             printf("can capture");
         }                   
         else{
