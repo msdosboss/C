@@ -80,5 +80,6 @@ int strncmp(char *s, char *t, int n){
         if (*s == '\0'){
             return 0;
         }
+        return 0;
     }
 }
