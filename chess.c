@@ -5,7 +5,7 @@ void printboard(int[][8]);
 void pawn(int[][8], int*, int);
 
 int main(){
-    int color = 1;                                                  // 0 = white and 1 = black
+    int color = 0;                                                  // 0 = white and 1 = black
     int end = 0;                                                    // 0 means games still going, 1 means white wins, -1 means black wins
     int *squarecord1;
     int board[8][8] =
@@ -102,23 +102,27 @@ void pawn(int board[][8],int *currentsquare, int color){
     printf("where would you like to move your pawn?");
     squarecord2 = getmove();
     if(!color){                                                                                                                                //checks for color
-        //if(board[*(currentsquare + 1) + 1][*currentsquare + 1] > 0 || board[*(currentsquare + 1) - 1][*currentsquare + 1])                   //checks if you can capture
-        if(*(currentsquare + 1) == 1 || *(currentsquare + 1) == 6){                                                                            //this if checks if a pawn can move 2           
-            if(*(squarecord2 + 1) - *(currentsquare + 1) > 0 && *(squarecord2 + 1) - *(currentsquare + 1) < 3 && *(squarecord2) == *(currentsquare)){
-                board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
-                board[*(currentsquare + 1)][*currentsquare] = 0;
-            }
-            else    {
-                printf("not a avaliable move");
-            }
-        }
+        if(board[(*(currentsquare + 1) + 1 <= 7 ) ? (*(currentsquare + 1) + 1) : 0][(*currentsquare + 1 <= 7) ? (*currentsquare + 1) : 0] % 2 != 0 || board[(*(currentsquare + 1) - 1 >= 0) ? (*(currentsquare + 1) - 1) : 0][(*currentsquare + 1 >= 7) ? (*currentsquare + 1) : 0] % 2 != 0){    //checks if you can capture
+            printf("can capture");
+        }                   
         else{
-            if(*(squarecord2 + 1) - *(currentsquare + 1) == 1 && *squarecord2 == *currentsquare){
-                board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
-                board[*(currentsquare + 1)][*currentsquare] = 0;
+            if(*(currentsquare + 1) == 1 || *(currentsquare + 1) == 6){                                                                            //this if checks if a pawn can move 2           
+                if(*(squarecord2 + 1) - *(currentsquare + 1) > 0 && *(squarecord2 + 1) - *(currentsquare + 1) < 3 && *(squarecord2) == *(currentsquare)){
+                    board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+                    board[*(currentsquare + 1)][*currentsquare] = 0;
+                }
+                else    {
+                    printf("not a avaliable move");
+                }
             }
-            else    {
-                printf("not a avaliable move");
+            else{
+                if(*(squarecord2 + 1) - *(currentsquare + 1) == 1 && *squarecord2 == *currentsquare){
+                    board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+                    board[*(currentsquare + 1)][*currentsquare] = 0;
+                }
+                else    {
+                    printf("not a avaliable move");
+                }
             }
         }
     }
