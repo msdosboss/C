@@ -17,7 +17,7 @@ int main(){
         {50,20,30,90,100,30,20,50},                                          // 50 = white rook, 20 = white knight, 30 = white bishop, 90 = white queen, 100 = white king, 10 = white pawn, 51 = black rook, 21 = black knight, 31 = black bishop, 91 = black queen, 101 = black king, 11 = black pawn
         {10,10,10,10,10,10,10,10},
         {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
+        {0,0,0,30,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {11,11,11,11,11,11,11,11},
@@ -297,11 +297,14 @@ int bishop(int board[][8],int *currentsquare,int color){
     squarecord2 = (int *) malloc(5);
 
     for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+        printf(" i = %d",i);
         if(board[*(currentsquare + 1) + i + 1][*currentsquare + i + 1] > 0){
             printf(" test ");
             upright = currentsquare;
            *upright = i + *upright;
            *(upright + 1) = i + *(upright + 1);                         //upright is now the right and up most square you can move
+            printf(" i = %d",i);
+            printf("\nupright = %d %d\n",*(upright + 1), *upright);
             break;
         }
     }
@@ -315,6 +318,7 @@ int bishop(int board[][8],int *currentsquare,int color){
     }
     for(int i = 0; (*currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
         if(board[*(currentsquare + 1) - i][*currentsquare - i] > 0){
+            printf("test 4");
             downleft = currentsquare;
            *downleft = (*downleft - i);
            *(downleft + 1) = (*(downleft + 1) - i);                         //down is now the left and down most square you can move
@@ -329,11 +333,11 @@ int bishop(int board[][8],int *currentsquare,int color){
             break;        
         }
     }
-    printf("upleft %d %d\n",(*upleft +1),*upleft);
-    printf("upright %d %d\n",(*upright +1),*upright);
-    printf("downleft %d %d\n",(*downleft + 1),*downleft);
-    printf("downright %d %d\n",(*downright +1),*downright);
+    printf("upleft %d %d\n",*(upleft +1),*upleft);
+    printf("upright %d %d\n",*(upright +1),*upright);
+    printf("downleft %d %d\n",*(downleft + 1),*downleft);
+    printf("downright %d %d\n",*(downright +1),*downright);
     
-    printf(" where would you like to move your knight? ");
+    printf(" where would you like to move your Bishop? ");
     squarecord2 = getmove();    
 }
