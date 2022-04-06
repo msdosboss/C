@@ -3,6 +3,7 @@
 int *getmove(void);
 void printboard(int[][8]);
 int pawn(int[][8], int*, int);
+int knight(int[][8], int*, int);
 
 int main(){
     system("color 0a");                                             //should be comment out for non windows machine
@@ -51,6 +52,24 @@ int main(){
                     }
                     else{
                         printf("that is a black pawn");
+                        break;
+                    }
+                case 20:
+                    if(!color){
+                        knight(board,squarecord1,color);
+                        break;
+                    }
+                    else{
+                        printf("that is a white knight");
+                        break;
+                    }
+                case 21:
+                    if(color){
+                        knight(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a black knight");
                         break;
                     }
             }
@@ -202,6 +221,46 @@ int pawn(int board[][8],int *currentsquare, int color){
             else    {
                 printf(" not a avaliable move ");
                 pawn(board,currentsquare,color);
+            }
+        }
+    }
+}
+
+int knight(int board[][8],int *currentsquare,int color){
+    int *squarecord2;
+    printf("current square %d ",*(currentsquare+1));
+    printf("%d",*currentsquare);
+    squarecord2 = (int *) malloc(5);
+
+    printf(" where would you like to move your knight? ");
+    squarecord2 = getmove();
+    if(!color){
+        if(board[*(squarecord2+1)][*squarecord2] % 2 != 0 || board[*(squarecord2+1)][*squarecord2] == 0){
+            if((*(squarecord2 + 1) == *(currentsquare + 1) + 2 && *squarecord2 == *currentsquare + 1) || (*(squarecord2 + 1) == *(currentsquare + 1) + 1 && *squarecord2 == *currentsquare + 2) || (*(currentsquare + 1) - *(squarecord2 + 1) == 1 && *squarecord2 == *currentsquare + 2) || (*(currentsquare + 1) - *(squarecord2 + 1) == 2 && *squarecord2 == *currentsquare + 1) || (*(squarecord2 + 1) == *(currentsquare + 1) + 1 && *currentsquare - *squarecord2 == 2) || (*(squarecord2 + 1) == *(currentsquare + 1) + 2 && *currentsquare - *squarecord2 == 1) || (*(currentsquare + 1) - *(squarecord2 + 1) == 1 && *currentsquare - *squarecord2 == 2)){
+                printf(" test 2 ");
+                board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+                board[*(currentsquare + 1)][*currentsquare] = 0;
+            }
+            else{
+                printf("not a legal move");
+                knight(board, currentsquare, color);
+            }
+        }
+        else{
+            printf("not a legal move collision");
+            knight(board, currentsquare, color);
+        }
+    }
+    else{
+        if(board[*(squarecord2+1)][*squarecord2] % 2 == 0){
+            if((*(squarecord2 + 1) == *(currentsquare + 1) + 2 && *squarecord2 == *currentsquare + 1) || (*(squarecord2 + 1) == *(currentsquare + 1) + 1 && *squarecord2 == *currentsquare + 2) || (*(currentsquare + 1) - *(squarecord2 + 1) == 1 && *squarecord2 == *currentsquare + 2) || (*(currentsquare + 1) - *(squarecord2 + 1) == 2 && *squarecord2 == *currentsquare + 1) || (*(squarecord2 + 1) == *(currentsquare + 1) + 1 && *currentsquare - *squarecord2 == 2) || (*(squarecord2 + 1) == *(currentsquare + 1) + 2 && *currentsquare - *squarecord2 == 1) || (*(currentsquare + 1) - *(squarecord2 + 1) == 1 && *currentsquare - *squarecord2 == 2)){
+                printf(" test 2 ");
+                board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+                board[*(currentsquare + 1)][*currentsquare] = 0;
+            }
+            else{
+                printf("not a legal move");
+                knight(board, currentsquare, color);
             }
         }
     }
