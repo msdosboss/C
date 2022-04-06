@@ -4,11 +4,12 @@ int *getmove(void);
 void printboard(int[][8]);
 int pawn(int[][8], int*, int);
 int knight(int[][8], int*, int);
+int bishop(int[][8], int*, int);
 
 int main(){
     system("color 0a");                                             //should be comment out for non windows machine
 
-    int color = 1;                                                  // 0 = white and 1 = black
+    int color = 0;                                                  // 0 = white and 1 = black
     int end = 0;                                                    // 0 means games still going, 1 means white wins, -1 means black wins
     int *squarecord1;
     int board[8][8] =
@@ -70,6 +71,24 @@ int main(){
                     }
                     else{
                         printf("that is a black knight");
+                        break;
+                    }
+                case 30:
+                    if(!color){
+                        bishop(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a white bishop");
+                        break;
+                    }
+                case 31:
+                    if(color){
+                        bishop(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a black bishop");
                         break;
                     }
             }
@@ -264,4 +283,57 @@ int knight(int board[][8],int *currentsquare,int color){
             }
         }
     }
+}
+
+int bishop(int board[][8],int *currentsquare,int color){
+    int *squarecord2;
+    int *upright, *downright, *upleft, *downleft;
+    printf("current square %d ",*(currentsquare+1));
+    printf("%d",*currentsquare);
+    upright = (int *) malloc(5);
+    downright = (int *) malloc(5);
+    upleft = (int *) malloc(5);
+    downleft = (int *) malloc(5);
+    squarecord2 = (int *) malloc(5);
+
+    for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+        if(board[*(currentsquare + 1) + i + 1][*currentsquare + i + 1] > 0){
+            printf(" test ");
+            upright = currentsquare;
+           *upright = i + *upright;
+           *(upright + 1) = i + *(upright + 1);                         //upright is now the right and up most square you can move
+            break;
+        }
+    }
+    for(int i = 0; (*currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
+        if(board[*(currentsquare + 1) - i][*currentsquare + i] > 0){
+            downright = currentsquare;
+           *downright = i + *downright;
+           *(downright + 1) = (*(downright + 1) - i);                         //down is now the right and down most square you can move
+            break;
+        }
+    }
+    for(int i = 0; (*currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
+        if(board[*(currentsquare + 1) - i][*currentsquare - i] > 0){
+            downleft = currentsquare;
+           *downleft = (*downleft - i);
+           *(downleft + 1) = (*(downleft + 1) - i);                         //down is now the left and down most square you can move
+            break;
+        }
+    }
+        for(int i = 0; i + (*currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
+        if(board[*(currentsquare + 1) + i][*currentsquare - i] > 0){
+            upleft = currentsquare;
+           *upleft = (*upleft - i);
+           *(upleft + 1) = i + *(upleft + 1);                         //upleft is now the left and up most square you can move
+            break;        
+        }
+    }
+    printf("upleft %d %d\n",(*upleft +1),*upleft);
+    printf("upright %d %d\n",(*upright +1),*upright);
+    printf("downleft %d %d\n",(*downleft + 1),*downleft);
+    printf("downright %d %d\n",(*downright +1),*downright);
+    
+    printf(" where would you like to move your knight? ");
+    squarecord2 = getmove();    
 }
