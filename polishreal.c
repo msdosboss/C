@@ -9,6 +9,7 @@ int getop(char []);
 void push(double);
 double pop(void);
 void clear(void);
+void top(void);
 
 main(){
     int type;
@@ -84,6 +85,10 @@ void clear(void){
         val[i] = 0;
     }
 }
+void top(void){
+    
+}
+
 
 #include <ctype.h>
 
