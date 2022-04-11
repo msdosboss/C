@@ -5,11 +5,13 @@ void printboard(int[][8]);
 int pawn(int[][8], int*, int);
 int knight(int[][8], int*, int);
 int bishop(int[][8], int*, int);
+int rook(int[][8], int*, int);
+int queen(int[][8], int*, int);
 
 int main(){
     system("color 0a");                                             //should be comment out for non windows machine
 
-    int color = 1;                                                  // 0 = white and 1 = black
+    int color = 0;                                                  // 0 = white and 1 = black
     int end = 0;                                                    // 0 means games still going, 1 means white wins, -1 means black wins
     int *squarecord1;
     int board[8][8] =
@@ -17,9 +19,9 @@ int main(){
         {50,20,30,90,100,30,20,50},                                          // 50 = white rook, 20 = white knight, 30 = white bishop, 90 = white queen, 100 = white king, 10 = white pawn, 51 = black rook, 21 = black knight, 31 = black bishop, 91 = black queen, 101 = black king, 11 = black pawn
         {10,10,10,10,10,10,10,10},
         {0,0,0,0,0,0,0,0},
-        {0,0,0,0,31,0,0,0},
         {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,90,0,0,0},
+        {0,0,0,11,0,0,0,0},
         {11,11,11,11,11,11,11,11},
         {51,21,31,91,101,31,21,51},
     };
@@ -91,6 +93,42 @@ int main(){
                         printf("that is a black bishop");
                         break;
                     }
+                case 50:
+                    if(!color){
+                        rook(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a white rook");
+                        break;
+                    }
+                case 51:
+                    if(color){
+                        rook(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a black rook");
+                        break;
+                    }
+                case 90:
+                    if(!color){
+                        queen(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a white queen");
+                        break;
+                    }
+                case 91:
+                    if(color){
+                        queen(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a black queen");
+                        break;
+                    }
             }
         }
         else{
@@ -136,7 +174,9 @@ void printboard(int board[][8]){
     for(int i = 0; i < 8; i++){
         printf("\n");
         for(int j = 0; j < 8;j++){
-            printf("%d-",board[i][j]);
+            printf("-%d",board[i][j]);
+            if(!board[i][j])
+                putchar('-');
         }
     }
 }
@@ -379,7 +419,7 @@ int bishop(int board[][8],int *currentsquare,int color){
         *(upleft + 1) = i + *(upleft + 1);                         //upleft is now the left and up most square you can move
         if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] > 0){
             if(!color){
-                if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 != 0){
+                if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 != 0){         //checks if you can capture
                     *(upleft + 1) = *(currentsquare + 1);
                     *upleft = *currentsquare;
                     *upleft = (*upleft - i) - 1;
@@ -387,7 +427,7 @@ int bishop(int board[][8],int *currentsquare,int color){
                 }
             }
             else{
-                if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 == 0 && board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] != 0){
+                if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 == 0 && board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] != 0){   //checks if black can capture
                     *(upleft + 1) = *(currentsquare + 1);
                     *upleft = *currentsquare;
                     *upleft = (*upleft - i) - 1;
@@ -404,14 +444,14 @@ int bishop(int board[][8],int *currentsquare,int color){
     
     printf(" where would you like to move your Bishop? ");
     squarecord2 = getmove();
-    for(int i = 0;i + *(currentsquare + 1) <=8 && i + *currentsquare <=8; i++){
+    for(int i = 0;i + *(currentsquare + 1) <=8 && i + *currentsquare <=8 && *downleft + i <= *upright && *(downleft + 1) + i <= *(upright + 1); i++){
         if(*squarecord2 == (*downleft + i) && *(squarecord2 + 1) == *(downleft + 1) + i){
             board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
             board[*(currentsquare + 1)][*currentsquare] = 0;
             orca = 1;
         }
     }
-    for(int i = 0;*(currentsquare + 1) + i <= 8 &&  *currentsquare - i >=0; i++){
+    for(int i = 0;*(currentsquare + 1) + i <= 8 &&  *currentsquare - i >=0 && *downright - i >= *upleft && *(downright + 1) + i <= *(upleft + 1); i++){
         if(*squarecord2 == (*downright - i) && *(squarecord2 + 1) == *(downright + 1) + i){
             board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
             board[*(currentsquare + 1)][*currentsquare] = 0;
@@ -422,4 +462,365 @@ int bishop(int board[][8],int *currentsquare,int color){
         printf("\nthat is not a valid move\n");
         bishop(board,currentsquare,color);
     }        
+}
+
+int rook(int board[][8],int *currentsquare,int color){
+    int *squarecord2;
+    int *right, *down, *up, *left;
+    int orca = 0;
+    printf("current square %d ",*(currentsquare+1));
+    printf("%d",*currentsquare);
+    up = (int *) malloc(5);
+    down = (int *) malloc(5);
+    left = (int *) malloc(5);
+    right = (int *) malloc(5);
+    squarecord2 = (int *) malloc(5);
+    for(int i = 0;*(currentsquare + 1) + i <= 7;i++){
+        *(up + 1) = *(currentsquare + 1);
+        *up = *currentsquare;
+        *(up + 1) = i + *(up + 1);
+        if(board[*(currentsquare + 1) + i + 1][*currentsquare] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1) + i + 1][*currentsquare] % 2 != 0){
+                    *(up + 1) = *(currentsquare + 1);
+                    *up = *currentsquare;
+                    *(up + 1) = i + *(up + 1) + 1;
+                }
+            }
+            else{
+                if(board[(*(currentsquare + 1) + i) + 1][*currentsquare] % 2 == 0 && board[(*(currentsquare + 1) + i) + 1][*currentsquare] != 0){
+                    *(up + 1) = *(currentsquare + 1);
+                    *up = *currentsquare;
+                    *(up + 1) = i + *(up + 1) + 1;
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0;*(currentsquare + 1) - i >= 0;i++){
+        *(down + 1) = *(currentsquare + 1) - i;
+        *down = *currentsquare;
+        if(board[*(currentsquare + 1) - i - 1][*currentsquare] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1) - i - 1][*currentsquare] % 2 != 0){
+                    *(down + 1) = *(currentsquare + 1) - i - 1;
+                    *down = *currentsquare;
+                }
+            }
+            else{
+                if(board[(*(currentsquare + 1) + i) + 1][*currentsquare] % 2 == 0 && board[(*(currentsquare + 1) + i) + 1][*currentsquare] != 0){
+                    *(down + 1) = *(currentsquare + 1) - i - 1;
+                    *down = *currentsquare;
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0;*(currentsquare) + i <= 7;i++){
+        *(right) = *(currentsquare) + i;
+        *(right + 1) = *(currentsquare + 1);
+        if(board[*(currentsquare + 1)][*currentsquare + i + 1] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1)][*currentsquare + i + 1] % 2 != 0){
+                    *(right) = *(currentsquare) + i + 1;
+                    *(right + 1) = *(currentsquare + 1);
+                }
+            }
+            else{
+                if(board[*(currentsquare + 1)][*currentsquare + i + 1] % 2 == 0 && board[*(currentsquare + 1)][*currentsquare + i + 1] != 0){
+                    *(right) = *(currentsquare) + i + 1;
+                    *(right + 1) = *(currentsquare + 1);
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0;*(currentsquare) - i >= 0;i++){
+        *(left) = *(currentsquare) - i;
+        *(left + 1) = *(currentsquare + 1);
+        if(board[*(currentsquare + 1)][*currentsquare - i - 1] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1)][*currentsquare - i - 1] % 2 != 0){
+                    *(left) = *(currentsquare) - i - 1;
+                    *(left + 1) = *(currentsquare + 1);
+                }
+            }
+            else{
+                if(board[*(currentsquare + 1)][*currentsquare - i - 1] % 2 == 0 && board[*(currentsquare + 1)][*currentsquare - i - 1] != 0){
+                    *(left) = *(currentsquare) - i - 1;
+                    *(left + 1) = *(currentsquare + 1);
+                }
+            }
+            break;
+        }
+    }
+    printf("\nup %d %d\n",*(up + 1),*up);
+    printf("right %d %d\n",*(right + 1),*right);
+    printf("left %d %d\n",*(left + 1),*left);
+    printf("down %d %d\n",*(down +1),*down);
+    
+    printf(" where would you like to move your rookn\n? ");
+    squarecord2 = getmove();
+    for(int i = 0;i + *(currentsquare + 1) <=8 && *currentsquare <=8 && *(down + 1) + i <= *(up + 1); i++){
+        if(*squarecord2 == (*down) && *(squarecord2 + 1) == *(down + 1) + i){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+        }
+    }
+    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left <= *right; i++){
+        if(*squarecord2 == (*left + i) && *(squarecord2 + 1) == *(left + 1)){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+        }
+    }
+    if(!orca){
+        printf("\nthat is not a valid move\n");
+        rook(board,currentsquare,color);
+    }            
+}
+int queen(int board[][8],int *currentsquare,int color){
+    int *squarecord2;
+    int *right, *down, *up, *left;
+    int orca = 0;
+    printf("current square %d ",*(currentsquare+1));
+    printf("%d",*currentsquare);
+    up = (int *) malloc(5);
+    down = (int *) malloc(5);
+    left = (int *) malloc(5);
+    right = (int *) malloc(5);
+    squarecord2 = (int *) malloc(5);
+    int *upright, *downright, *upleft, *downleft;
+    upright = (int *) malloc(5);
+    downright = (int *) malloc(5);
+    upleft = (int *) malloc(5);
+    downleft = (int *) malloc(5);
+
+    for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+        *upright = *currentsquare;
+        *(upright + 1) = *(currentsquare + 1);
+        *upright = i + *upright;
+        *(upright + 1) = i + *(upright + 1);                         //upright is now the right and up most square you can move
+        if(board[*(currentsquare + 1) + i + 1][*currentsquare + i + 1] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1) + i + 1][*currentsquare + i + 1] % 2 != 0){
+                    *upright = *currentsquare;
+                    *(upright + 1) = *(currentsquare + 1);
+                    *upright = i + *upright + 1;
+                    *(upright + 1) = i + *(upright + 1) + 1;                         //upright is now the right and up most square you can move including takes
+                }
+            }
+            else{
+                if(board[*(currentsquare + 1) + i + 1][*currentsquare + i + 1] % 2 == 0 && board[*(currentsquare + 1) + i + 1][*currentsquare + i + 1] != 0){
+                    *upright = *currentsquare;
+                    *(upright + 1) = *(currentsquare + 1);
+                    *upright = i + *upright + 1;
+                    *(upright + 1) = i + *(upright + 1) + 1;                         //upright is now the right and up most square you can move including takes
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0; (*currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
+        *downright = *currentsquare;
+        *(downright + 1) = *(currentsquare + 1);
+        *downright = i + *downright;
+        *(downright + 1) = (*(downright + 1) - i);                         //down is now the right and down most square you can move
+        if(board[(*(currentsquare + 1) - i) - 1][*currentsquare + i + 1] > 0){
+            if(!color){
+                if(board[(*(currentsquare + 1) - i) - 1][*currentsquare + i + 1] % 2 != 0){
+                    *downright = *currentsquare;
+                    *(downright + 1) = *(currentsquare + 1);
+                    *downright = i + *downright + 1;
+                    *(downright + 1) = (*(downright + 1) - i) - 1;                         //down is now the right and down most square you can move    
+                }
+            }
+            else{
+                if(board[(*(currentsquare + 1) - i) - 1][*currentsquare + i + 1] % 2 == 0 && board[(*(currentsquare + 1) - i) - 1][*currentsquare + i + 1] != 0){
+                    *downright = *currentsquare;
+                    *(downright + 1) = *(currentsquare + 1);
+                    *downright = i + *downright + 1;
+                    *(downright + 1) = (*(downright + 1) - i) - 1;                         //down is now the right and down most square you can move 
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0; (*currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
+        *downleft = *currentsquare;
+        *(downleft + 1) = *(currentsquare + 1);
+        *downleft = (*downleft - i);
+        *(downleft + 1) = (*(downleft + 1) - i);                         //down is now the left and down most square you can move
+        if(board[(*(currentsquare + 1) - i) - 1][(*currentsquare - i) - 1] > 0){
+            if(!color){
+                if(board[(*(currentsquare + 1) - i) - 1][(*currentsquare - i) - 1] % 2 != 0){
+                    *downleft = *currentsquare;
+                    *(downleft + 1) = *(currentsquare + 1);
+                    *downleft = (*downleft - i) - 1;
+                    *(downleft + 1) = ((*(downleft + 1) - i) - 1);                         //down is now the left and down most square you can move
+                }
+            }
+            else{
+                if(board[(*(currentsquare + 1) - i) - 1][(*currentsquare - i) - 1] % 2 == 0 && board[(*(currentsquare + 1) - i) - 1][(*currentsquare - i) - 1] != 0){
+                    *downleft = *currentsquare;
+                    *(downleft + 1) = *(currentsquare + 1);
+                    *downleft = (*downleft - i) - 1;
+                    *(downleft + 1) = ((*(downleft + 1) - i) - 1);                         //down is now the left and down most square you can move
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0; i + (*currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
+        *(upleft + 1) = *(currentsquare + 1);
+        *upleft = *currentsquare;
+        *upleft = (*upleft - i);
+        *(upleft + 1) = i + *(upleft + 1);                         //upleft is now the left and up most square you can move
+        if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 != 0){         //checks if you can capture
+                    *(upleft + 1) = *(currentsquare + 1);
+                    *upleft = *currentsquare;
+                    *upleft = (*upleft - i) - 1;
+                    *(upleft + 1) = i + *(upleft + 1) + 1;                         //upleft is now the left and up most square you can move
+                }
+            }
+            else{
+                if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 == 0 && board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] != 0){   //checks if black can capture
+                    *(upleft + 1) = *(currentsquare + 1);
+                    *upleft = *currentsquare;
+                    *upleft = (*upleft - i) - 1;
+                    *(upleft + 1) = i + *(upleft + 1) + 1;                         //upleft is now the left and up most square you can move
+                }
+            }
+            break;        
+        }
+    }
+
+
+
+
+    for(int i = 0;*(currentsquare + 1) + i <= 7;i++){
+        *(up + 1) = *(currentsquare + 1);
+        *up = *currentsquare;
+        *(up + 1) = i + *(up + 1);
+        if(board[*(currentsquare + 1) + i + 1][*currentsquare] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1) + i + 1][*currentsquare] % 2 != 0){
+                    *(up + 1) = *(currentsquare + 1);
+                    *up = *currentsquare;
+                    *(up + 1) = i + *(up + 1) + 1;
+                }
+            }
+            else{
+                if(board[(*(currentsquare + 1) + i) + 1][*currentsquare] % 2 == 0 && board[(*(currentsquare + 1) + i) + 1][*currentsquare] != 0){
+                    *(up + 1) = *(currentsquare + 1);
+                    *up = *currentsquare;
+                    *(up + 1) = i + *(up + 1) + 1;
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0;*(currentsquare + 1) - i >= 0;i++){
+        *(down + 1) = *(currentsquare + 1) - i;
+        *down = *currentsquare;
+        if(board[*(currentsquare + 1) - i - 1][*currentsquare] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1) - i - 1][*currentsquare] % 2 != 0){
+                    *(down + 1) = *(currentsquare + 1) - i - 1;
+                    *down = *currentsquare;
+                }
+            }
+            else{
+                if(board[(*(currentsquare + 1) + i) + 1][*currentsquare] % 2 == 0 && board[(*(currentsquare + 1) + i) + 1][*currentsquare] != 0){
+                    *(down + 1) = *(currentsquare + 1) - i - 1;
+                    *down = *currentsquare;
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0;*(currentsquare) + i <= 7;i++){
+        *(right) = *(currentsquare) + i;
+        *(right + 1) = *(currentsquare + 1);
+        if(board[*(currentsquare + 1)][*currentsquare + i + 1] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1)][*currentsquare + i + 1] % 2 != 0){
+                    *(right) = *(currentsquare) + i + 1;
+                    *(right + 1) = *(currentsquare + 1);
+                }
+            }
+            else{
+                if(board[*(currentsquare + 1)][*currentsquare + i + 1] % 2 == 0 && board[*(currentsquare + 1)][*currentsquare + i + 1] != 0){
+                    *(right) = *(currentsquare) + i + 1;
+                    *(right + 1) = *(currentsquare + 1);
+                }
+            }
+            break;
+        }
+    }
+    for(int i = 0;*(currentsquare) - i >= 0;i++){
+        *(left) = *(currentsquare) - i;
+        *(left + 1) = *(currentsquare + 1);
+        if(board[*(currentsquare + 1)][*currentsquare - i - 1] > 0){
+            if(!color){
+                if(board[*(currentsquare + 1)][*currentsquare - i - 1] % 2 != 0){
+                    *(left) = *(currentsquare) - i - 1;
+                    *(left + 1) = *(currentsquare + 1);
+                }
+            }
+            else{
+                if(board[*(currentsquare + 1)][*currentsquare - i - 1] % 2 == 0 && board[*(currentsquare + 1)][*currentsquare - i - 1] != 0){
+                    *(left) = *(currentsquare) - i - 1;
+                    *(left + 1) = *(currentsquare + 1);
+                }
+            }
+            break;
+        }
+    }
+    printf("\nup %d %d\n",*(up + 1),*up);
+    printf("right %d %d\n",*(right + 1),*right);
+    printf("left %d %d\n",*(left + 1),*left);
+    printf("down %d %d\n",*(down +1),*down);
+    printf("\nupleft %d %d\n",*(upleft + 1),*upleft);
+    printf("upright %d %d\n",*(upright + 1),*upright);
+    printf("downleft %d %d\n",*(downleft + 1),*downleft);
+    printf("downright %d %d\n",*(downright +1),*downright);
+
+    printf(" where would you like to move your queen?\n ");
+    squarecord2 = getmove();
+    for(int i = 0;i + *(currentsquare + 1) <=8 && *currentsquare <=8 && *(down + 1) + i <= *(up + 1); i++){
+        if(*squarecord2 == (*down) && *(squarecord2 + 1) == *(down + 1) + i){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+        }
+    }
+    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left <= *right; i++){
+        if(*squarecord2 == (*left + i) && *(squarecord2 + 1) == *(left + 1)){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+        }
+    }
+    for(int i = 0;i + *(currentsquare + 1) <=8 && i + *currentsquare <=8 && *downleft + i <= *upright && *(downleft + 1) + i <= *(upright + 1); i++){
+        if(*squarecord2 == (*downleft + i) && *(squarecord2 + 1) == *(downleft + 1) + i){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+        }
+    }
+    for(int i = 0;*(currentsquare + 1) + i <= 8 &&  *currentsquare - i >=0 && *downright - i >= *upleft && *(downright + 1) + i <= *(upleft + 1); i++){
+        if(*squarecord2 == (*downright - i) && *(squarecord2 + 1) == *(downright + 1) + i){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+        }
+    }
+    if(!orca){
+        printf("\nthat is not a valid move\n");
+        queen(board,currentsquare,color);
+    }            
 }
