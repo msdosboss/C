@@ -458,7 +458,7 @@ int isrookcheck(int board[][8], int *square, int *currentsquare, int color){
             return 1;
         }
     }
-    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left <= *right; i++){
+    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left + i <= *right; i++){
         if(*square == (*left + i) && *(square + 1) == *(left + 1) && *currentsquare != *left + i){
             return 1;
         }
@@ -709,7 +709,7 @@ int isqueencheck(int board[][8], int *square, int *currentsquare, int color){
             return 1;
         }
     }
-    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left <= *right; i++){
+    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left + i <= *right; i++){
         if(*square == (*left + i) && *(square + 1) == *(left + 1) && *currentsquare != *left + i){
             return 1;
         }
@@ -783,6 +783,7 @@ int ischeck(int board [][8],int *square, int color){
                         if(!color){
                             if(isrookcheck(board, square, currentsquare, color)){
                                 printf(" rook ");
+                                printf(" %d %d ", *(currentsquare + 1), *currentsquare);
                                 return 1;
                             }
                         }
