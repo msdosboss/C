@@ -1232,7 +1232,7 @@ int rook(int board[][8],int *currentsquare,int color){
             orca = 1;
         }
     }
-    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left <= *right; i++){
+    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left + i <= *right; i++){
         if(*squarecord2 == (*left + i) && *(squarecord2 + 1) == *(left + 1)){
             board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
             board[*(currentsquare + 1)][*currentsquare] = 0;
@@ -1503,7 +1503,7 @@ int queen(int board[][8],int *currentsquare,int color){
             orca = 1;
         }
     }
-    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left <= *right; i++){
+    for(int i = 0;*(currentsquare + 1)<= 8 &&  *currentsquare + i <=8 && *left + i<= *right; i++){
         if(*squarecord2 == (*left + i) && *(squarecord2 + 1) == *(left + 1)){
             board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
             board[*(currentsquare + 1)][*currentsquare] = 0;
