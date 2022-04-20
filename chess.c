@@ -7,6 +7,7 @@ int knight(int[][8], int*, int);
 int bishop(int[][8], int*, int);
 int rook(int[][8], int*, int);
 int queen(int[][8], int*, int);
+int king(int[][8], int*, int);
 char *givecords(int *);
 int ischeck(int[][8],int*,int);
 int ispawncheck(int[][8],int*,int*,int);
@@ -25,7 +26,7 @@ int main(){
         {50,20,30,90,100,30,20,50},                                          // 50 = white rook, 20 = white knight, 30 = white bishop, 90 = white queen, 100 = white king, 10 = white pawn, 51 = black rook, 21 = black knight, 31 = black bishop, 91 = black queen, 101 = black king, 11 = black pawn
         {10,10,10,10,10,10,10,10},
         {0,0,0,0,0,0,0,0},
-        {0,0,0,0,11,0,0,0},
+        {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
         {11,11,11,11,11,11,11,11},
@@ -34,7 +35,7 @@ int main(){
 
     squarecord1 = (int *) malloc(5);
     while(end == 0){
-        printf("---%d---",ischeck(board,getmove(),color));
+        //printf("---%d---",ischeck(board,getmove(),color));
         printboard(board);
         if(!color){
             printf("\nyou are white");
@@ -136,12 +137,30 @@ int main(){
                         printf("that is a black queen");
                         break;
                     }
+                case 100:
+                    if(!color){
+                        king(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a white king");
+                        break;
+                    }
+                case 101:
+                    if(color){
+                        king(board, squarecord1, color);
+                        break;
+                    }
+                    else{
+                        printf("that is a black king");
+                        break;
+                    }
             }
         }
         else{
             printf("that square does not have a piece on it");
         }
-        //color = (color == 0) ? (1) : (0);
+        color = (color == 0) ? (1) : (0);
     }
 }
 
@@ -218,7 +237,7 @@ int isbishopcheck(int board[][8], int *square, int *currentsquare, int color){
     downleft = (int *) malloc(5);
     //color = (color == 0) ? (1) : (0); // we are seeing if the oppisite color can check here so we have to switch color. Had to comment it all out because it was not accounting for a piece defending another piece of its own color
     
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
         *upright = *currentsquare;
         *(upright + 1) = *(currentsquare + 1);
         *upright = i + *upright;
@@ -249,7 +268,7 @@ int isbishopcheck(int board[][8], int *square, int *currentsquare, int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
         *downright = *currentsquare;
         *(downright + 1) = *(currentsquare + 1);
         *downright = i + *downright;
@@ -280,7 +299,7 @@ int isbishopcheck(int board[][8], int *square, int *currentsquare, int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
         *downleft = *currentsquare;
         *(downleft + 1) = *(currentsquare + 1);
         *downleft = (*downleft - i);
@@ -311,7 +330,7 @@ int isbishopcheck(int board[][8], int *square, int *currentsquare, int color){
             break;
         }
     }
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
         *(upleft + 1) = *(currentsquare + 1);
         *upleft = *currentsquare;
         *upleft = (*upleft - i);
@@ -479,7 +498,7 @@ int isqueencheck(int board[][8], int *square, int *currentsquare, int color){
     right = (int *) malloc(5);
     //color = (color == 0) ? (1) : (0);
     
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
         *upright = *currentsquare;
         *(upright + 1) = *(currentsquare + 1);
         *upright = i + *upright;
@@ -510,7 +529,7 @@ int isqueencheck(int board[][8], int *square, int *currentsquare, int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
         *downright = *currentsquare;
         *(downright + 1) = *(currentsquare + 1);
         *downright = i + *downright;
@@ -541,7 +560,7 @@ int isqueencheck(int board[][8], int *square, int *currentsquare, int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
         *downleft = *currentsquare;
         *(downleft + 1) = *(currentsquare + 1);
         *downleft = (*downleft - i);
@@ -572,7 +591,7 @@ int isqueencheck(int board[][8], int *square, int *currentsquare, int color){
             break;
         }
     }
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
         *(upleft + 1) = *(currentsquare + 1);
         *upleft = *currentsquare;
         *upleft = (*upleft - i);
@@ -965,7 +984,7 @@ int bishop(int board[][8],int *currentsquare,int color){
     downleft = (int *) malloc(5);
     squarecord2 = (int *) malloc(5);
 
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
         *upright = *currentsquare;
         *(upright + 1) = *(currentsquare + 1);
         *upright = i + *upright;
@@ -996,7 +1015,7 @@ int bishop(int board[][8],int *currentsquare,int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
         *downright = *currentsquare;
         *(downright + 1) = *(currentsquare + 1);
         *downright = i + *downright;
@@ -1027,7 +1046,7 @@ int bishop(int board[][8],int *currentsquare,int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && *currentsquare - i >= 0; i++){
         *downleft = *currentsquare;
         *(downleft + 1) = *(currentsquare + 1);
         *downleft = (*downleft - i);
@@ -1058,20 +1077,24 @@ int bishop(int board[][8],int *currentsquare,int color){
             break;
         }
     }
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
+    for(int i = 0;*(currentsquare + 1) + i <= 7 && *currentsquare - i >= 0; i++){
         *(upleft + 1) = *(currentsquare + 1);
         *upleft = *currentsquare;
         *upleft = (*upleft - i);
         *(upleft + 1) = i + *(upleft + 1);                         //upleft is now the left and up most square you can move
         if(*(upleft + 1) == 7){
+            printf("test1");
             break;
         }
         if(*upleft == 0){
+            printf("test2");
             break;
         }
-        if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] > 0){
+        if(board[(*(currentsquare + 1) + i + 1 > 7) ? (7) : (*(currentsquare + 1) + i + 1)][((*currentsquare - i) - 1 < 0) ? (0) : ((*currentsquare - i) - 1)] > 0){
+            printf("\norca 2\n");
             if(!color){
                 if(board[*(currentsquare + 1) + i + 1][(*currentsquare - i) - 1] % 2 != 0 && *(currentsquare + 1) + i + 1 <= 7 && (*currentsquare - i) - 1 >= 0){         //checks if you can capture
+                    printf("\norca\n");
                     *(upleft + 1) = *(currentsquare + 1);
                     *upleft = *currentsquare;
                     *upleft = (*upleft - i) - 1;
@@ -1261,7 +1284,7 @@ int queen(int board[][8],int *currentsquare,int color){
     upleft = (int *) malloc(5);
     downleft = (int *) malloc(5);
 
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && i + *currentsquare <= 7; i++){
         *upright = *currentsquare;
         *(upright + 1) = *(currentsquare + 1);
         *upright = i + *upright;
@@ -1292,7 +1315,7 @@ int queen(int board[][8],int *currentsquare,int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
+    for(int i = 0; *(currentsquare + 1) - i >= 0 && i + *currentsquare <= 7; i++){
         *downright = *currentsquare;
         *(downright + 1) = *(currentsquare + 1);
         *downright = *downright + i;
@@ -1324,7 +1347,7 @@ int queen(int board[][8],int *currentsquare,int color){
             break;
         }
     }
-    for(int i = 0; (*currentsquare + 1) - i > 0 && *currentsquare - i >= 0; i++){
+    for(int i = 0; *(currentsquare + 1) - i > 0 && *currentsquare - i >= 0; i++){
         *downleft = *currentsquare;
         *(downleft + 1) = *(currentsquare + 1);
         *downleft = (*downleft - i);
@@ -1356,7 +1379,7 @@ int queen(int board[][8],int *currentsquare,int color){
             break;
         }
     }
-    for(int i = 0; i + (*currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
+    for(int i = 0; i + *(currentsquare + 1) <= 7 && *currentsquare - i >= 0; i++){
         *(upleft + 1) = *(currentsquare + 1);
         *upleft = *currentsquare;
         *upleft = (*upleft - i);
@@ -1528,4 +1551,18 @@ int queen(int board[][8],int *currentsquare,int color){
         printf("\nthat is not a valid move\n");
         queen(board,currentsquare,color);
     }            
+}
+
+int king(int board[][8],int *currentsquare,int color){
+    int *squarecord2;
+    squarecord2 = (int *) malloc(5);
+    squarecord2 = getmove();
+    if((*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) || (*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1)) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) - 1) || (*squarecord2 == *currentsquare && *(squarecord2 + 1) == *(currentsquare + 1) - 1) || (*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1) - 1))){
+        board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+        board[*(currentsquare + 1)][*currentsquare] = 0;
+    }
+    else{
+        printf("\nthat is not a valid move\n");
+        king(board,currentsquare,color);
+    }
 }
