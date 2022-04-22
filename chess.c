@@ -11,6 +11,7 @@ int queen(int[][8], int*, int);
 int king(int[][8], int*, int);
 char *givecords(int *);
 int ischeck(int[][8],int*,int);
+int ischeckmate(int[][8],int);
 int ispawncheck(int[][8],int*,int*,int);
 int isknightcheck(int[][8],int*,int*);
 int isbishopcheck(int[][8],int*,int*,int);
@@ -24,11 +25,11 @@ int main(){
     int *squarecord1;
     int board[8][8] =
     {
-        {50,20,30,90,100,30,20,50},                                          // 50 = white rook, 20 = white knight, 30 = white bishop, 90 = white queen, 100 = white king, 10 = white pawn, 51 = black rook, 21 = black knight, 31 = black bishop, 91 = black queen, 101 = black king, 11 = black pawn
+        {50,20,30,90,0,30,20,50},                                          // 50 = white rook, 20 = white knight, 30 = white bishop, 90 = white queen, 100 = white king, 10 = white pawn, 51 = black rook, 21 = black knight, 31 = black bishop, 91 = black queen, 101 = black king, 11 = black pawn
         {10,10,10,10,10,10,10,10},
         {0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,100,0,0,0},
         {0,0,0,0,0,0,0,0},
         {11,11,11,11,11,11,11,11},
         {51,21,31,91,101,31,21,51},
@@ -36,7 +37,7 @@ int main(){
 
     squarecord1 = (int *) malloc(5);
     while(end == 0){
-        //printf("---%d---",ischeck(board,getmove(),color));
+        //printf("---%d---",ischeckmate(board,color));
         printboard(board);
         if(!color){
             printf("\nyou are white");
@@ -213,6 +214,15 @@ int *makemove(char c, char d){
     else{
         printf("wrong\n");
     }
+}
+
+int *inttointpointer(int a, int b){                     //a = row b = collumn
+    int *passint;
+    passint = (int *) malloc(5);
+
+    *passint = b;
+    *(passint + 1) = a;
+    return passint;
 }
 
 void printboard(int board[][8]){
@@ -757,6 +767,13 @@ int isqueencheck(int board[][8], int *square, int *currentsquare, int color){
     return 0;
 }
 
+int iskingcheck(int board[][8], int *square, int *currentsquare, int color){
+    if((*square == *currentsquare + 1 && *(square + 1) == *(currentsquare + 1) + 1) || (*square == *currentsquare && *(square + 1) == *(currentsquare + 1) + 1) || (*square == *currentsquare - 1 && *(square + 1) == *(currentsquare + 1) + 1) || (*square == *currentsquare - 1 && *(square + 1) == *(currentsquare + 1) || (*square == *currentsquare + 1 && *(square + 1) == *(currentsquare + 1)) || (*square == *currentsquare - 1 && *(square + 1) == *(currentsquare + 1) - 1) || (*square == *currentsquare && *(square + 1) == *(currentsquare + 1) - 1) || (*square == *currentsquare + 1 && *(square + 1) == *(currentsquare + 1) - 1))){
+        return 1;
+    }
+    return 0;
+}
+
 int ischeck(int board [][8],int *square, int color){
     int *currentsquare;
     currentsquare = (int *) malloc(5);
@@ -843,10 +860,41 @@ int ischeck(int board [][8],int *square, int color){
                             }
                         }
                         break;
+                    case 100:
+                        if(color){
+                            if(iskingcheck(board, square, currentsquare, color)){
+                                printf(" king ");
+                                return 1;
+                            }
+                        }
+                        break;
+                    case 101:
+                        if(!color){
+                            if(iskingcheck(board, square, currentsquare, color)){
+                                printf(" king ");
+                                return 1;
+                            }
+                        }
+                        break;
                 }
         }
     }
     return 0;
+}
+
+int ischeckmate(int board [][8], int color){
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8;j++){
+            if(board[i][j] == 100 + color){
+                if(ischeck(board,inttointpointer(i,j),color) && ischeck(board,inttointpointer(i + 1,j),color) && ischeck(board,inttointpointer(i + 1,j + 1),color) && ischeck(board,inttointpointer(i,j + 1),color) && ischeck(board,inttointpointer(i - 1,j + 1),color) && ischeck(board,inttointpointer(i - 1,j),color) && ischeck(board,inttointpointer(i - 1,j - 1),color) && ischeck(board,inttointpointer(i,j - 1),color) && ischeck(board,inttointpointer(i + 1,j - 1),color)){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            }
+        }
+    }
 }
 
 int pawn(int board[][8],int *currentsquare, int color){
@@ -1575,7 +1623,7 @@ int queen(int board[][8],int *currentsquare,int color){
     }            
 }
 
-int wking = 0;
+int wking = 0;      //keeps track of if the kings have moved yet
 int bking = 0;
 
 int king(int board[][8],int *currentsquare,int color){
@@ -1584,14 +1632,20 @@ int king(int board[][8],int *currentsquare,int color){
     squarecord2 = (int *) malloc(5);
     squarecord2 = getmove();
     if((*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) || (*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1)) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) - 1) || (*squarecord2 == *currentsquare && *(squarecord2 + 1) == *(currentsquare + 1) - 1) || (*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1) - 1))){
-        board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
-        board[*(currentsquare + 1)][*currentsquare] = 0;
-        orca = 1;
-        if (!color){
-            wking = 1;
+        if(!ischeck(board, squarecord2, color)){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+            if (!color){
+                wking = 1;
+            }
+            else{
+                bking = 1;
+            }
         }
         else{
-            bking = 1;
+            printf("that square is in check");
+            king(board,currentsquare,color);
         }
     }
     if(!color){
