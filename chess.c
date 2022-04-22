@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 int *getmove(void);
+int *makemove(char,char);
 void printboard(int[][8]);
 int pawn(int[][8], int*, int);
 int knight(int[][8], int*, int);
@@ -194,6 +195,26 @@ int *getmove(){
         }
     }
 }
+
+int *makemove(char c, char d){
+    int *squarecord;
+    int flag = 0;
+    
+    squarecord = (int *) malloc(5);
+
+    if (c >= 'a' && c <='h'){
+        *squarecord++ = (c - 'a');                                              //-1 is and offset for the array since it starts at 0
+        flag = 1;
+    }
+    if (d >= '1' && d <= '8' && flag ==1){
+        *squarecord++ = d - '0' - 1;
+        return squarecord - 2;
+    }
+    else{
+        printf("wrong\n");
+    }
+}
+
 void printboard(int board[][8]){
     for(int i = 0; i < 8; i++){
         printf("\n");
@@ -836,6 +857,7 @@ int pawn(int board[][8],int *currentsquare, int color){
 
     printf(" where would you like to move your pawn? ");
     squarecord2 = getmove();
+    //squarecord2 = makemove('e','4');
     if(!color){                                                                                                                                //checks for color
         if(board[(*(currentsquare + 1) + 1 <= 7 ) ? (*(currentsquare + 1) + 1) : 0][(*currentsquare + 1 <= 7) ? (*currentsquare + 1) : 0] % 2 != 0 || board[(*(currentsquare + 1) + 1 <= 7) ? (*(currentsquare + 1) - 1) : 0][(*currentsquare - 1 <= 0) ? (*currentsquare - 1) : 0] % 2 != 0){    //checks if you can capture 
             printf(" can capture ");
@@ -1553,15 +1575,63 @@ int queen(int board[][8],int *currentsquare,int color){
     }            
 }
 
+int wking = 0;
+int bking = 0;
+
 int king(int board[][8],int *currentsquare,int color){
     int *squarecord2;
+    int orca = 0;
     squarecord2 = (int *) malloc(5);
     squarecord2 = getmove();
     if((*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) + 1) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) || (*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1)) || (*squarecord2 == *currentsquare - 1 && *(squarecord2 + 1) == *(currentsquare + 1) - 1) || (*squarecord2 == *currentsquare && *(squarecord2 + 1) == *(currentsquare + 1) - 1) || (*squarecord2 == *currentsquare + 1 && *(squarecord2 + 1) == *(currentsquare + 1) - 1))){
         board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
         board[*(currentsquare + 1)][*currentsquare] = 0;
+        orca = 1;
+        if (!color){
+            wking = 1;
+        }
+        else{
+            bking = 1;
+        }
+    }
+    if(!color){
+        if(*currentsquare == *squarecord2 - 2 && *(currentsquare + 1) == *(squarecord2 + 1) && !wking && !ischeck(board,makemove('f','1'),color) && !ischeck(board,makemove('g','1'),color) && board[0][5] == 0 && board[0][6] == 0){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[0][5] = board[0][7];
+            board[0][7] = 0;
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+            wking = 1;
+        }
+        if(*currentsquare == *squarecord2 + 2 && *(currentsquare + 1) == *(squarecord2 + 1) && !wking && !ischeck(board,makemove('b','1'),color) && !ischeck(board,makemove('c','1'),color) && !ischeck(board,makemove('d','1'),color) && board[0][1] == 0 && board[0][2] == 0 && board[0][3] == 0){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[0][3] = board[0][0];
+            board[0][0] = 0;
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+            wking = 1;
+        }
     }
     else{
+        if(*currentsquare == *squarecord2 - 2 && *(currentsquare + 1) == *(squarecord2 + 1) && !bking && !ischeck(board,makemove('f','8'),color) && !ischeck(board,makemove('g','8'),color) && board[7][5] == 0 && board[7][6] == 0){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[7][5] = board[7][7];
+            board[7][7] = 0;
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+            bking = 1;
+        }
+        if(*currentsquare == *squarecord2 + 2 && *(currentsquare + 1) == *(squarecord2 + 1) && !bking && !ischeck(board,makemove('b','8'),color) && !ischeck(board,makemove('c','8'),color) && !ischeck(board,makemove('d','8'),color) && board[7][1] == 0 && board[7][2] == 0 && board[7][3] == 0){
+            board[*(squarecord2 + 1)][*squarecord2] = board[*(currentsquare + 1)][*currentsquare];
+            board[7][3] = board[7][0];
+            board[7][0] = 0;
+            board[*(currentsquare + 1)][*currentsquare] = 0;
+            orca = 1;
+            bking = 1;
+        }
+    }
+    //printf("%d %d",)
+    if(!orca){
         printf("\nthat is not a valid move\n");
         king(board,currentsquare,color);
     }
